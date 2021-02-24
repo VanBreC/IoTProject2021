@@ -19,7 +19,7 @@ while True:
     
     sense.show_message(str(temp)+ "F")
     
-    client.publish("test", temp)
+    client.publish("testpi3", temp)
     time.sleep(2)
     
     
