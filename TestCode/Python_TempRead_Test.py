@@ -12,11 +12,12 @@ client.connect(broker_address)
 while True:
     
     temp = sense.get_temperature()
+    temp = temp*(9/5)+32
     temp = round(temp,1)
     
     #print(temp)
     
-    sense.show_message(str(temp))
+    sense.show_message(str(temp)+ "F")
     
     client.publish("test", temp)
     time.sleep(2)
