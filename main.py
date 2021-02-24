@@ -2,9 +2,14 @@
 from sense_hat import SenseHat
 from time import sleep
 from random import choice
+import paho.mqtt.client as mqtt
+import json
 
 # CREATE a sense object
 sense = SenseHat()
+broker_address="192.168.1.32"
+client = mqtt.Client("DWF")
+client.connect(broker_address)
 
 # Set up the colours (white, green, red, empty)
 
@@ -64,18 +69,19 @@ e,e,g,e,e,e,e,e
 # Set a variable pause to 3 (the initial time between turns)  
 # Set variables score and angle to 0  
 # Create a variable called play set to True (this will be used to stop the game later)  
-pause = 3
+stall = 3
 score = 0
 angle = 0
-
 sense.show_message("Select with Joystick", scroll_speed=0.04, text_colour=[100,100,100])
 sense.show_message("Normal (Left)", scroll_speed=0.04, text_colour=[0,255,0])
 sense.show_message("or", scroll_speed=0.04, text_colour=[100,100,100])
 sense.show_message("Hard (Right)", scroll_speed=0.04, text_colour=[255,0,0])
+
 select = True
+for event in sense.stick.get_events():
+    continue
 sense.show_letter(normal, text_colour=[0,255,0])
 difficulty = "N"
-
 while select:
     for event in sense.stick.get_events():
         if event.direction == "left":
@@ -86,7 +92,7 @@ while select:
             sense.show_letter(hard, text_colour=[255,0,0])
         elif event.direction == "middle":
             if difficulty == normal:
-                sense.show_message("Keep the arrow pointing up", scroll_speed=0.05, text_colour=[100,100,100])
+                sense.show_message("Keep green arrow up", scroll_speed=0.04, text_colour=[0,255,0])
                 normal_difficulty = True
                 hard_difficulty = False
                 select = False
@@ -96,7 +102,8 @@ while select:
                 hard_difficulty = True
                 normal_difficulty = False
                 select = False
-
+            else:
+                break
 
 # WHILE play == True 
 while normal_difficulty:
@@ -112,7 +119,7 @@ while normal_difficulty:
     sense.set_pixels(arrow_green)
     
     # SLEEP for current pause length  
-    sleep(pause)
+    sleep(stall)
     
     
     acceleration = sense.get_accelerometer_raw()
@@ -123,9 +130,9 @@ while normal_difficulty:
     x = round(x, 0)
     y = round(y, 0)
 
-    print(angle)
-    print(x)
-    print(y)
+    #print(angle)
+    #print(x)
+    #print(y)
 
     # IF orientation matches the arrow...
     if x == -1 and angle == 90:
@@ -152,7 +159,7 @@ while normal_difficulty:
         normal_difficulty = False
 
     # Shorten the pause duration slightly  
-    pause = pause * 0.95
+    stall = stall * 0.95
     
     # Pause before the next arrow 
     sleep(0.5)
@@ -176,7 +183,7 @@ while hard_difficulty:
     sense.set_pixels(arrow_colour)
     
     # SLEEP for current pause length  
-    sleep(pause)
+    sleep(stall)
     
     
     acceleration = sense.get_accelerometer_raw()
@@ -187,9 +194,9 @@ while hard_difficulty:
     x = round(x, 0)
     y = round(y, 0)
 
-    print(angle)
-    print(x)
-    print(y)
+    #print(angle)
+    #print(x)
+    #print(y)
 
     # IF orientation matches the arrow...
     if arrow_choice == "G":
@@ -246,7 +253,7 @@ while hard_difficulty:
             hard_difficulty = False
 
     # Shorten the pause duration slightly  
-    pause = pause * 0.95
+    stall = stall * 0.95
     
     # Pause before the next arrow 
     sleep(0.5)
@@ -255,6 +262,18 @@ while hard_difficulty:
 # When loop is exited, display a message with the score  
 msg = "Your score was %s" % score
 sense.set_rotation(0)
-sense.show_message(msg, scroll_speed=0.05, text_colour=[100, 100, 100])
+sense.show_message(msg, scroll_speed=0.04, text_colour=[100, 100, 100])
 
+sense.show_message("Would you like to save your score? Joystick: Yes/Up No/Down", scroll_speed=0.04, text_colour=[100,100,100])
 
+Save = True
+while Save:
+    for event in sense.stick.get_events():
+        if event.direction == "up":
+            name = "Test"
+            info = json.dumps({"ID": name, "Score": score})
+            client.publish("testarrowgame", info)
+            Save = False
+        elif event.direction == "down":
+            Save = False
+            break
