@@ -266,14 +266,35 @@ sense.show_message(msg, scroll_speed=0.04, text_colour=[100, 100, 100])
 
 sense.show_message("Would you like to save your score? Joystick: Yes/Up No/Down", scroll_speed=0.04, text_colour=[100,100,100])
 
+for event in sense.stick.get_events():
+    continue
+
+sense.show_letter("Y", text_colour=[0,255,0])
+Keep = "Y"
+
+LeaderBoard = False
 Save = True
 while Save:
     for event in sense.stick.get_events():
         if event.direction == "up":
-            name = "Test"
-            info = json.dumps({"ID": name, "Score": score})
-            client.publish("testarrowgame", info)
-            Save = False
+            sense.show_letter("Y", text_colour=[0,255,0])
+            Keep = "Y"
         elif event.direction == "down":
-            Save = False
-            break
+            sense.show_letter("N", text_colour=[255,0,0])
+            Keep = "N"
+        elif event.direction == "middle":
+            if Keep == "Y":
+                sense.show_message("Select Three Characters as Your Name", scroll_speed=0.04, text_colour=[0,0,255])
+                #LeaderBoard = True
+                name = "Test"
+                info = json.dumps({"ID": name, "Score": score})
+                client.publish("testarrowgame", info)
+                Save = False
+            elif Keep == "N":
+                sense.show_message("Thanks For Playing!!!", scroll_speed=0.04, text_colour=[0,0,255])
+                Save = False
+            else:
+                continue
+
+#while LeaderBoard:
+    #sense.show_letter
