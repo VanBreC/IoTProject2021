@@ -72,9 +72,9 @@ e,e,g,e,e,e,e,e
 stall = 3
 score = 0
 angle = 0
-sense.show_message("Select with Joystick", scroll_speed=0.04, text_colour=[100,100,100])
+sense.show_message("Select with Joystick", scroll_speed=0.04, text_colour=[0,0,255])
 sense.show_message("Normal (Left)", scroll_speed=0.04, text_colour=[0,255,0])
-sense.show_message("or", scroll_speed=0.04, text_colour=[100,100,100])
+sense.show_message("or", scroll_speed=0.04, text_colour=[0,0,255])
 sense.show_message("Hard (Right)", scroll_speed=0.04, text_colour=[255,0,0])
 
 select = True
@@ -262,7 +262,7 @@ while hard_difficulty:
 # When loop is exited, display a message with the score  
 msg = "Your score was %s" % score
 sense.set_rotation(0)
-sense.show_message(msg, scroll_speed=0.04, text_colour=[100, 100, 100])
+sense.show_message(msg, scroll_speed=0.04, text_colour=[0, 0, 255])
 
 sense.show_message("Would you like to save your score? Joystick: Yes/Up No/Down", scroll_speed=0.04, text_colour=[100,100,100])
 
@@ -285,10 +285,10 @@ while Save:
         elif event.direction == "middle":
             if Keep == "Y":
                 sense.show_message("Select Three Characters as Your Name", scroll_speed=0.04, text_colour=[0,0,255])
-                #LeaderBoard = True
-                name = "Test"
-                info = json.dumps({"ID": name, "Score": score})
-                client.publish("testarrowgame", info)
+                LeaderBoard = True
+                name = ""
+                i = 65
+                sense.show_letter(chr(i))
                 Save = False
             elif Keep == "N":
                 sense.show_message("Thanks For Playing!!!", scroll_speed=0.04, text_colour=[0,0,255])
@@ -296,5 +296,33 @@ while Save:
             else:
                 continue
 
-#while LeaderBoard:
-    #sense.show_letter
+while LeaderBoard:
+    if i==91:
+        i = 48
+    elif i==58:
+        i == 65
+    elif i == 64:
+        i = 57
+    elif i == 47:
+        i = 90
+    elif len(name)==3:
+        sense.show_message(name + " " + str(score), scroll_speed=0.04, text_colour=[255,255,0])
+        sense.show_message("Thanks For Playing!!!", scroll_speed=0.04, text_colour=[0,0,255])
+        info = json.dumps({"ID": name, "Score": score})
+        client.publish("testarrowgame", info)
+        LeaderBoard = False
+    else:
+        character = chr(i)
+        sense.show_letter(character)
+    for event in sense.stick.get_events():
+
+        if event.direction == "up" and event.action == "pressed":
+            i = i+1
+
+        elif event.direction == "down" and event.action == "pressed":
+            i = i-1
+
+        elif event.direction == "middle" and event.action == "pressed":
+            name = name + character
+            sense.set_pixels(check_mark)
+            sleep(0.5)
