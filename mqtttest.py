@@ -22,18 +22,18 @@ broker_address="192.168.1.32"
 
 #generate random temperature reading
 #seed the generator
-random.seed(1)
 
 #connect to message bus
 print("Connecting to MQTT")
 client = mqtt.Client("DWF")
+
 client.connect(broker_address)
 
-
+random.seed(1)
 #publish 5 messages to the message queue
 #generate random temp ints from 60 to 80
 for i in range(5):
-    client.publish("test", random.randint(60,80))
+    client.publish("testpi3", random.randint(60,80))
     time.sleep(2)
 
 input("Please hit q to quit: ")
