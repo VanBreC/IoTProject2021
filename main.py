@@ -9,7 +9,6 @@ import json
 sense = SenseHat()
 broker_address="192.168.1.32"
 client = mqtt.Client("DWF")
-client.connect(broker_address)
 
 # Set up the colours (white, green, red, empty)
 
@@ -72,19 +71,12 @@ e,e,g,e,e,e,e,e
 stall = 3
 score = 0
 angle = 0
-Opener = True
-while Opener:
-    for event in sense.stick.get_events():
-        if event.direction == "middle" and event.action == "pressed":
-            sense.clear()
-            Opener = False
-        else:
-            sense.show_message("--Navigate With Joystick L R U D - Middle Select/Skip--", scroll_speed=0.04, text_colour=[0,0,255])
-            sleep(0.5)
-            sense.show_message("Choose Difficulty", scroll_speed=0.04, text_colour=[255,125,0])
-            sense.show_message("Normal (Left)", scroll_speed=0.04, text_colour=[0,255,0])
-            sense.show_message("Hard (Right)", scroll_speed=0.04, text_colour=[255,0,0])
-            Opener = False
+
+sense.show_message("--Navigate With Joystick L R U D - Middle Select--", scroll_speed=0.04, text_colour=[0,0,255])
+sleep(0.5)
+sense.show_message("Choose Difficulty", scroll_speed=0.04, text_colour=[255,125,0])
+sense.show_message("Normal (L)", scroll_speed=0.04, text_colour=[0,255,0])
+sense.show_message("Hard (R)", scroll_speed=0.04, text_colour=[255,0,0])
 
 select = True
 for event in sense.stick.get_events():
@@ -274,8 +266,8 @@ sense.set_rotation(0)
 sense.show_message(msg, scroll_speed=0.04, text_colour=[0, 0, 255])
 
 sense.show_message("Save your score?", scroll_speed=0.04, text_colour=[0,0,255])
-sense.show_message("Yes (Up)", scroll_speed=0.04, text_colour=[0,255,0])
-sense.show_message("No (Down)", scroll_speed=0.04, text_colour=[255,0,0])
+sense.show_message("Yes (U)", scroll_speed=0.04, text_colour=[0,255,0])
+sense.show_message("No (D)", scroll_speed=0.04, text_colour=[255,0,0])
 
 for event in sense.stick.get_events():
     continue
@@ -317,10 +309,13 @@ while LeaderBoard:
     elif i == 47:
         i = 90
     elif len(name)==3:
-        sense.show_message(name + " " + str(score), scroll_speed=0.04, text_colour=[255,255,0])
+        sense.show_message(name + " " + str(score), scroll_speed=0.04, text_colour=[255,125,0])
         sense.show_message("Thanks For Playing!!!", scroll_speed=0.04, text_colour=[0,0,255])
-        info = json.dumps({"ID": name, "Score": score})
+        info = json.dumps({"Difficulty": difficulty, "ID": name, "Score": score})
         print (info)
+        sleep(0.25)
+        client.connect(broker_address)
+        sleep(0.25)
         client.publish("testarrowgame", info)
         LeaderBoard = False
     else:
