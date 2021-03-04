@@ -23,8 +23,8 @@ e,e,g,e,e,e,e,e
 i = 65
 Name = ""
 sense.show_letter(chr(i))
-#for i in range(123):
-    #print(str(i) + ": " + chr(i))
+for i in range(123):
+    print(str(i) + ": " + chr(i))
 while True:
     if i==91:
         i = 48
