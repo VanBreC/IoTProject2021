@@ -72,10 +72,19 @@ e,e,g,e,e,e,e,e
 stall = 3
 score = 0
 angle = 0
-sense.show_message("Select with Joystick", scroll_speed=0.04, text_colour=[0,0,255])
-sense.show_message("Normal (Left)", scroll_speed=0.04, text_colour=[0,255,0])
-sense.show_message("or", scroll_speed=0.04, text_colour=[0,0,255])
-sense.show_message("Hard (Right)", scroll_speed=0.04, text_colour=[255,0,0])
+Opener = True
+while Opener:
+    for event in sense.stick.get_events():
+        if event.direction == "middle" and event.action == "pressed":
+            sense.clear()
+            Opener = False
+        else:
+            sense.show_message("--Navigate With Joystick L R U D - Middle Select/Skip--", scroll_speed=0.04, text_colour=[0,0,255])
+            sleep(0.5)
+            sense.show_message("Choose Difficulty", scroll_speed=0.04, text_colour=[255,125,0])
+            sense.show_message("Normal (Left)", scroll_speed=0.04, text_colour=[0,255,0])
+            sense.show_message("Hard (Right)", scroll_speed=0.04, text_colour=[255,0,0])
+            Opener = False
 
 select = True
 for event in sense.stick.get_events():
@@ -221,7 +230,7 @@ while hard_difficulty:
               sleep(0.1)
               sense.clear()
               sleep(0.1)
-            normal_difficulty = False
+            hard_difficulty = False
     
     # IF orientation matches the arrow...
     if arrow_choice == "R":
@@ -264,7 +273,9 @@ msg = "Your score was %s" % score
 sense.set_rotation(0)
 sense.show_message(msg, scroll_speed=0.04, text_colour=[0, 0, 255])
 
-sense.show_message("Would you like to save your score? Joystick: Yes/Up No/Down", scroll_speed=0.04, text_colour=[100,100,100])
+sense.show_message("Save your score?", scroll_speed=0.04, text_colour=[0,0,255])
+sense.show_message("Yes (Up)", scroll_speed=0.04, text_colour=[0,255,0])
+sense.show_message("No (Down)", scroll_speed=0.04, text_colour=[255,0,0])
 
 for event in sense.stick.get_events():
     continue
@@ -284,7 +295,7 @@ while Save:
             Keep = "N"
         elif event.direction == "middle":
             if Keep == "Y":
-                sense.show_message("Select Three Characters as Your Name", scroll_speed=0.04, text_colour=[0,0,255])
+                sense.show_message("Select Three Characters", scroll_speed=0.04, text_colour=[0,0,255])
                 LeaderBoard = True
                 name = ""
                 i = 65
@@ -300,7 +311,7 @@ while LeaderBoard:
     if i==91:
         i = 48
     elif i==58:
-        i == 65
+        i = 65
     elif i == 64:
         i = 57
     elif i == 47:
@@ -309,6 +320,7 @@ while LeaderBoard:
         sense.show_message(name + " " + str(score), scroll_speed=0.04, text_colour=[255,255,0])
         sense.show_message("Thanks For Playing!!!", scroll_speed=0.04, text_colour=[0,0,255])
         info = json.dumps({"ID": name, "Score": score})
+        print (info)
         client.publish("testarrowgame", info)
         LeaderBoard = False
     else:
@@ -316,10 +328,10 @@ while LeaderBoard:
         sense.show_letter(character)
     for event in sense.stick.get_events():
 
-        if event.direction == "up" and event.action == "pressed":
+        if event.direction == "up" and (event.action == "pressed" or event.action == "held"):
             i = i+1
 
-        elif event.direction == "down" and event.action == "pressed":
+        elif event.direction == "down" and (event.action == "pressed" or event.action == "held"):
             i = i-1
 
         elif event.direction == "middle" and event.action == "pressed":
