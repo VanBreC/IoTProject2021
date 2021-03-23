@@ -93,13 +93,13 @@ while select:
             sense.show_letter(hard, text_colour=[255,0,0])
         elif event.direction == "middle":
             if difficulty == normal:
-                sense.show_message("Keep green arrow up", scroll_speed=0.04, text_colour=[0,255,0])
+                sense.show_message("Keep Green Arrow Pointing Up", scroll_speed=0.04, text_colour=[0,255,0])
                 normal_difficulty = True
                 hard_difficulty = False
                 select = False
             elif difficulty == hard:
-                sense.show_message("Green Arrows Up", scroll_speed=0.04, text_colour=[0,255,0])
-                sense.show_message("Red Arrows Down", scroll_speed=0.04, text_colour=[255,0,0])
+                sense.show_message("Green Arrows Point Up", scroll_speed=0.04, text_colour=[0,255,0])
+                sense.show_message("Red Arrows Point Down", scroll_speed=0.04, text_colour=[255,0,0])
                 hard_difficulty = True
                 normal_difficulty = False
                 select = False
