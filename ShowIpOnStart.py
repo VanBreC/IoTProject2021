@@ -6,6 +6,9 @@ import subprocess
 
 Loop = True
 
+#To run on start up, enter command sudo crontab -e
+#Choose nano
+#Add to end of file @reboot python3 /home/pi/Documents/IoTProject2021/ShowIpOnStart.py
 while Loop:
     res = str(subprocess.check_output(['hostname', '-I'])).split(' ')[0].replace("b'", "")
     sense.show_message(res)
