@@ -5,15 +5,22 @@ import time as time
 from time import sleep
 import json
 import subprocess
-#from gpiozero import CPUTemperature
-#cpu = CPUTemperature()
+from gpiozero import CPUTemperature
+cpu = CPUTemperature()
 sense.clear()
-broker_address="192.168.1.32"
 
+broker_address="192.168.1.32"
 sship = str(subprocess.check_output(['hostname', '-I'])).split(' ')[0].replace("b'", "")
 endofsship = sship.split(".")[3]
 client = mqtt.Client("DWF"+endofsship)
-client.connect(broker_address)
+try:
+    client.connect(broker_address)
+except OSError:
+    print("Failed to connect to Server | Attempting connection to local VM")
+    broker_address="192.168.1.74"
+    client.connect(broker_address)
+except:
+    print("Both Connections Failed")
 
 i = 65
 room = ""
@@ -53,19 +60,22 @@ while AssignRoom:
             sense.show_letter(character, text_colour=[0,255,0])
             sleep(0.5)
 
-#Average_list = []
-#total = 0
+Average_list = []
+total = 0
 
 while TempRead:
-    
+    if len(Average_list) == 10:
+        Average_list = []
+        total = 0
     temp = sense.get_temperature()
-    temp = (temp - 9.314634146341467)*(9/5)+32
+    diff = round(cpu.temperature - temp, 1)
+    Average_list += [diff]
+    total += diff
+    average = total/len(Average_list)
+    temp = (temp - average)*(9/5)+32
     temp = round(temp,1)
-    #diff = round(cpu.temperature - temp, 1)
-    #Average_list += [diff]
-    #total += diff
-    #average = total/len(Average_list)
     #print("Average: " + str(average))
+    #print("total: " + str(total))
 
     #print(temp)
     
