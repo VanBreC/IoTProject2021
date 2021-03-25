@@ -12,6 +12,7 @@ Loop = True
 while Loop:
     res = str(subprocess.check_output(['hostname', '-I'])).split(' ')[0].replace("b'", "")
     sense.show_message(res)
+    #print (res.split(".")[3])
     for event in sense.stick.get_events():
         if event.direction == "middle" and (event.action == "pressed" or event.action == "held"):
             Loop = False
