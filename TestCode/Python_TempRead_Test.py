@@ -4,13 +4,15 @@ import paho.mqtt.client as mqtt
 import time as time
 from time import sleep
 import json
-from gpiozero import CPUTemperature
-cpu = CPUTemperature()
+import subprocess
+#from gpiozero import CPUTemperature
+#cpu = CPUTemperature()
 sense.clear()
 broker_address="192.168.1.32"
 
-print("Connecting to MQTT")
-client = mqtt.Client("DWF")
+sship = str(subprocess.check_output(['hostname', '-I'])).split(' ')[0].replace("b'", "")
+endofsship = sship.split(".")[3]
+client = mqtt.Client("DWF"+endofsship)
 client.connect(broker_address)
 
 i = 65
