@@ -22,9 +22,13 @@ while AssignRoom:
     if i==91:
         i = 48
     elif i==58:
+        i = 45
+    elif i==46:
         i = 65
-    elif i == 64:
+    elif i==44:
         i = 57
+    elif i == 64:
+        i = 45
     elif i == 47:
         i = 90
     elif len(room)==6:
