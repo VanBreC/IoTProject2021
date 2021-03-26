@@ -17,7 +17,7 @@ try:
     client.connect(broker_address)
 except OSError:
     print("Failed to connect to Server | Attempting connection to local VM")
-    broker_address="192.168.1.74"
+    broker_address="192.168.1.10"
     client.connect(broker_address)
 except:
     print("Both Connections Failed")
