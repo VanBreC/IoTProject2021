@@ -13,7 +13,10 @@ sense.set_pixel(2, 6, [255,0,0])
 sense.set_pixel(3, 6, [255,0,0])
 sense.set_pixel(4, 6, [255,0,0])
 sense.set_pixel(5, 5, [255,0,0])
-time.sleep(3)
+pixel_list = sense.get_pixels()
+print(pixel_list)
+
+time.sleep(10)
 
 r = [255,0,0]
 o = [255,127,0]
