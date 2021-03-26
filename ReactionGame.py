@@ -4,11 +4,14 @@ from time import sleep
 from random import choice
 import paho.mqtt.client as mqtt
 import json
+import subprocess
 
 # CREATE a sense object
 sense = SenseHat()
 broker_address="192.168.1.32"
-client = mqtt.Client("DWF")
+sship = str(subprocess.check_output(['hostname', '-I'])).split(' ')[0].replace("b'", "")
+endofsship = sship.split(".")[3]
+client = mqtt.Client("DWF"+endofsship)
 
 # Set up the colours (white, green, red, empty)
 
@@ -311,12 +314,21 @@ while LeaderBoard:
     elif len(name)==3:
         sense.show_message(name + " " + str(score), scroll_speed=0.04, text_colour=[255,125,0])
         sense.show_message("Thanks For Playing!!!", scroll_speed=0.04, text_colour=[0,0,255])
-        info = json.dumps({"Difficulty": difficulty, "ID": name, "Score": score})
-        print (info)
+        info = json.dumps({"Game": "Reaction", "Difficulty": difficulty, "ID": name, "Score": score})
+        #print (info)
         sleep(0.25)
-        client.connect(broker_address)
+        try:
+            client.connect(broker_address)
+        except OSError:
+            print("Failed to connect to Server | Attempting connection to local VM")
+            broker_address="192.168.1.10"
+            client.connect(broker_address)
+        except:
+            print("Both Connections Failed")
+            LeaderBoard = False
+            break
         sleep(0.25)
-        client.publish("testarrowgame", info)
+        client.publish("GameScores", info)
         LeaderBoard = False
     else:
         character = chr(i)
