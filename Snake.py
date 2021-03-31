@@ -13,11 +13,13 @@ sship = str(subprocess.check_output(['hostname', '-I'])).split(' ')[0].replace("
 endofsship = sship.split(".")[3]
 client = mqtt.Client("DWF"+endofsship)
 
-o = (200,110,0)
+o = (255,165,0)
 g = (0, 255, 0)
 r = (255,0,0)
-b = (0,0,200)
+b = (0,0,255)
 e = (0, 0, 0)
+
+
 
 check_mark = [
 e,e,e,e,e,e,e,e,
@@ -29,6 +31,10 @@ g,e,e,e,g,e,e,e,
 e,g,e,g,e,e,e,e,
 e,e,g,e,e,e,e,e
 ]
+
+sense.show_message("Collect The Fruit | Dont Collide Into Your Body or The Edge", scroll_speed=0.04, text_colour=b)
+sense.show_message("--Push The Joystick In Any Direction To Start--", scroll_speed=0.04, text_colour=b)
+sleep(0.5)
 
 GameStart = False
 Wait = True
@@ -48,6 +54,9 @@ Fruity = 3
 sense.set_pixel(SnakeHeadx, SnakeHeady, g)
 sense.set_pixel(Fruitx, Fruity, r)
 
+for event in sense.stick.get_events():
+    continue
+
 while Wait:
     for event in sense.stick.get_events():
         if event.action == "pressed":
@@ -57,11 +66,6 @@ while Wait:
             Wait = False
 
 while GameStart:
-    if Score == 64:
-        sense.show_message("Perfect Snake!!!", scroll_speed=0.05)
-        sense.show_message("Your Score was " + str(Score), scroll_speed=0.05)
-        GameStart = False
-        break
     DirectionList = []
     for event in sense.stick.get_events():
         if event.action == "pressed":
@@ -100,18 +104,41 @@ while GameStart:
         #print ("X: ", SnakeHeadx, "\nY: ", SnakeHeady)
         SnakeBodyPos.append(str(SnakeHeadx)+str(SnakeHeady))
         if (SnakeBodyPos.count(str(SnakeHeadx)+str(SnakeHeady)) > 1) or (SnakeHeadx < 0 or SnakeHeadx > 7) or (SnakeHeady < 0 or SnakeHeady > 7):
-            sense.show_message("Game Over", scroll_speed=0.05)
-            sense.show_message("Your Score was " + str(Score), scroll_speed=0.05)
+            if SnakeHeadx == -1:
+                SnakeHeadx = SnakeHeadx + 1
+            elif SnakeHeadx == 8:
+                SnakeHeadx = SnakeHeadx - 1
+            elif SnakeHeady == -1:
+                SnakeHeady = SnakeHeady + 1
+            elif SnakeHeady == 8:
+                SnakeHeady = SnakeHeady - 1
+            for i in range(10):
+                sense.set_pixel(SnakeHeadx, SnakeHeady, e)
+                sleep(0.1)
+                sense.set_pixel(SnakeHeadx, SnakeHeady, g)
+                sleep(0.1)
+            sense.show_message("Game Over", scroll_speed=0.05, text_colour=r)
+            sense.show_message("Your Score was " + str(Score), scroll_speed=0.05, text_colour=b)
             GameStart = False
             break
         sense.set_pixel(SnakeHeadx, SnakeHeady, g)
-        sense.set_pixel(SnakeBodyx[0], SnakeBodyy[0], (0, 0, 0))
+        sense.set_pixel(SnakeBodyx[0], SnakeBodyy[0], e)
         del SnakeBodyx[0]
         del SnakeBodyy[0]
         del SnakeBodyPos[0]
 
         if SnakeHeadx == Fruitx and SnakeHeady == Fruity:
             Score = Score+1
+            print (Score)
+            if Score == 63:
+                for i in range(10):
+                    sense.clear()
+                    sleep(0.1)
+                    sense.clear(g)
+                    sleep(0.1)
+                sense.show_message("Perfect Snake 62 Points!!!", scroll_speed=0.05, text_colour=b)
+                GameStart = False
+                break
             SnakeBodyx.insert(1,SnakeBodyx[0])
             SnakeBodyy.insert(1,SnakeBodyy[0])
             SnakeBodyPos.insert(1,SnakeBodyPos[0])
@@ -123,14 +150,14 @@ while GameStart:
             sense.set_pixel(Fruitx, Fruity, r)
         sleep(0.5)
 
-sense.show_message("Save your score?", scroll_speed=0.04, text_colour=[0,0,127])
-sense.show_message("Yes (U)", scroll_speed=0.04, text_colour=[0,127,0])
-sense.show_message("No (D)", scroll_speed=0.04, text_colour=[127,0,0])
+sense.show_message("Save your score?", scroll_speed=0.04, text_colour=b)
+sense.show_message("Yes (U)", scroll_speed=0.04, text_colour=g)
+sense.show_message("No (D)", scroll_speed=0.04, text_colour=r)
 
 for event in sense.stick.get_events():
     continue
 
-sense.show_letter("Y", text_colour=[0,127,0])
+sense.show_letter("Y", text_colour=g)
 Keep = "Y"
 
 LeaderBoard = False
@@ -139,21 +166,21 @@ Save = True
 while Save:
     for event in sense.stick.get_events():
         if event.direction == "up":
-            sense.show_letter("Y", text_colour=[0,127,0])
+            sense.show_letter("Y", text_colour=g)
             Keep = "Y"
         elif event.direction == "down":
-            sense.show_letter("N", text_colour=[127,0,0])
+            sense.show_letter("N", text_colour=r)
             Keep = "N"
         elif event.direction == "middle":
             if Keep == "Y":
-                sense.show_message("Select Three Characters", scroll_speed=0.04, text_colour=[0,0,127])
+                sense.show_message("Use The Joystick To Select Three Characters | U D    --Middle Press Selects--", scroll_speed=0.04, text_colour=b)
                 LeaderBoard = True
                 name = ""
                 i = 65
                 sense.show_letter(chr(i))
                 Save = False
             elif Keep == "N":
-                sense.show_message("Thanks For Playing!!!", scroll_speed=0.04, text_colour=[0,0,127])
+                sense.show_message("Thanks For Playing!!!", scroll_speed=0.04, text_colour=b)
                 Save = False
             else:
                 continue
@@ -169,8 +196,8 @@ while LeaderBoard:
     elif i == 47:
         i = 90
     elif len(name)==3:
-        sense.show_message(name + " " + str(Score), scroll_speed=0.04, text_colour=[127,127,0])
-        sense.show_message("Thanks For Playing!!!", scroll_speed=0.04, text_colour=[0,0,127])
+        sense.show_message(name + " " + str(Score), scroll_speed=0.04, text_colour=o)
+        sense.show_message("Thanks For Playing!!!", scroll_speed=0.04, text_colour=b)
         info = json.dumps({"Game": "Snake", "ID": name, "Score": Score})
         #print (info)
         sleep(0.25)
@@ -189,7 +216,7 @@ while LeaderBoard:
         LeaderBoard = False
     else:
         character = chr(i)
-        sense.show_letter(character)
+        sense.show_letter(character, o)
     for event in sense.stick.get_events():
 
         if event.direction == "up" and (event.action == "pressed" or event.action == "held"):
