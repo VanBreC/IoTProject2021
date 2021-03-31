@@ -82,7 +82,7 @@ while TempRead:
     sense.show_message(str(temp)+ "F")
     
     info = json.dumps({"Room": room, "Temp": temp})
-    client.publish("testpi3", info)
+    client.publish("PiTemps", info)
     time.sleep(2)
     
     
