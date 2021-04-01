@@ -1,7 +1,6 @@
 from sense_hat import SenseHat
 sense = SenseHat()
 import paho.mqtt.client as mqtt
-import time as time
 from time import sleep
 import json
 import subprocess
@@ -26,6 +25,8 @@ i = 65
 room = ""
 AssignRoom = True
 TempRead = False
+
+
 
 while AssignRoom:
     if i==91:
@@ -83,6 +84,6 @@ while TempRead:
     
     info = json.dumps({"Room": room, "Temp": temp})
     client.publish("PiTemps", info)
-    time.sleep(2)
+    sleep(2)
     
     
