@@ -32,9 +32,7 @@ e,g,e,g,e,e,e,e,
 e,e,g,e,e,e,e,e
 ]
 
-sense.show_message("Collect The Fruit | Dont Collide Into Your Body or The Edge", scroll_speed=0.04, text_colour=b)
-sense.show_message("--Push The Joystick In Any Direction To Start--", scroll_speed=0.04, text_colour=b)
-sleep(0.5)
+#sense.set_pixel(column, row, (r, g, b))
 
 GameStart = False
 Wait = True
@@ -50,20 +48,34 @@ SnakeBodyPos = [13]
 Fruitx = 6
 Fruity = 3
 
-#sense.set_pixel(column, row, (r, g, b))
-sense.set_pixel(SnakeHeadx, SnakeHeady, g)
-sense.set_pixel(Fruitx, Fruity, r)
-
-for event in sense.stick.get_events():
-    continue
+TotalMovement = 0
 
 while Wait:
+    sense.show_message("--Middle Click Joystick For Rules | Push Any Direction To Start--", scroll_speed=0.04, text_colour=b)
+    sleep(1)
+    sleep(1)
+    sleep(1)
     for event in sense.stick.get_events():
-        if event.action == "pressed":
-            Direction = str(event.direction)
-            #print (Direction)
+        if event.direction == "middle":
+            sense.show_message("Collect The Fruit | Dont Collide Into Your Body or The Edge", scroll_speed=0.04, text_colour=o)
+            sleep(1.5)
+            sense.show_message("Game Start", scroll_speed=0.04, text_colour=b)
+            Direction = "right"
+            sense.set_pixel(SnakeHeadx, SnakeHeady, g)
+            sense.set_pixel(Fruitx, Fruity, r)
+            sleep(2)
             GameStart = True
             Wait = False
+            break
+        elif (event.direction != "middle") and (event.action == "pressed"):
+            Direction = str(event.direction)
+            #print (Direction)
+            sense.set_pixel(SnakeHeadx, SnakeHeady, g)
+            sense.set_pixel(Fruitx, Fruity, r)
+            sleep(2)
+            GameStart = True
+            Wait = False
+            break
 
 while GameStart:
     DirectionList = []
@@ -129,14 +141,14 @@ while GameStart:
 
         if SnakeHeadx == Fruitx and SnakeHeady == Fruity:
             Score = Score+1
-            print (Score)
+            #print (Score)
             if Score == 63:
                 for i in range(10):
                     sense.clear()
                     sleep(0.1)
                     sense.clear(g)
                     sleep(0.1)
-                sense.show_message("Perfect Snake 62 Points!!!", scroll_speed=0.05, text_colour=b)
+                sense.show_message("Perfect Snake 63 Points!!!", scroll_speed=0.05, text_colour=b)
                 GameStart = False
                 break
             SnakeBodyx.insert(1,SnakeBodyx[0])
@@ -148,11 +160,13 @@ while GameStart:
                 Fruity = choice([0, 1, 2, 3, 4, 5, 6, 7])
                 FruitPos = str(Fruitx)+str(Fruity)
             sense.set_pixel(Fruitx, Fruity, r)
+        TotalMovement = TotalMovement + 1
         sleep(0.5)
 
 sense.show_message("Save your score?", scroll_speed=0.04, text_colour=b)
 sense.show_message("Yes (U)", scroll_speed=0.04, text_colour=g)
 sense.show_message("No (D)", scroll_speed=0.04, text_colour=r)
+sense.show_message("Middle Click Selects", scroll_speed=0.04, text_colour=b)
 
 for event in sense.stick.get_events():
     continue
@@ -173,7 +187,7 @@ while Save:
             Keep = "N"
         elif event.direction == "middle":
             if Keep == "Y":
-                sense.show_message("Use The Joystick To Select Three Characters | U D    --Middle Press Selects--", scroll_speed=0.04, text_colour=b)
+                sense.show_message("Select Three Characters", scroll_speed=0.04, text_colour=b)
                 LeaderBoard = True
                 name = ""
                 i = 65
@@ -198,7 +212,7 @@ while LeaderBoard:
     elif len(name)==3:
         sense.show_message(name + " " + str(Score), scroll_speed=0.04, text_colour=o)
         sense.show_message("Thanks For Playing!!!", scroll_speed=0.04, text_colour=b)
-        info = json.dumps({"Game": "Snake", "ID": name, "Score": Score})
+        info = json.dumps({"Game": "Snake", "ID": name, "Score": Score, "Movement": TotalMovement})
         #print (info)
         sleep(0.25)
         try:
