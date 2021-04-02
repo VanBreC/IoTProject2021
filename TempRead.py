@@ -9,7 +9,7 @@ from gpiozero import CPUTemperature
 cpu = CPUTemperature()
 sense.clear()
 
-priority = ""
+#priority = ""
 room = ""
 Average_list = []
 total = 0
@@ -77,16 +77,16 @@ def TempRead(client):
     #print(temp)
 
     sense.show_message(str(temp)+ "F")
-    info = json.dumps({"Priority": priority, "Room": room, "Temp": temp})
+    info = json.dumps({"PiNumber": pinumber, "Room": room, "Temp": temp})
     client.publish("PiTemps", info)
     sleep(2)
 
-def on_connect(client, userdata, flags, rc):
+"""def on_connect(client, userdata, flags, rc):
     print ("Connected with result code "+str(rc))
     client.subscribe("ReturnPiTemps")
-    client.publish("Start", "Pi " + Identify() + " Started Reading Temps")
+    client.publish("Start", "Pi " + Identify() + " Started Reading Temps")"""
 
-def on_message(client, userdata, msg):
+"""def on_message(client, userdata, msg):
     global priority
     if str(msg.payload.decode("UTF-8")) == ("Pi " + Identify() + " Started Reading Temps"):
         pass
@@ -101,7 +101,7 @@ def on_message(client, userdata, msg):
             print ("Non Message")
             client.disconnect()
             #client.loop_stop()
-    TempRead(client=client)
+    TempRead(client=client)"""
 
 client = mqtt.Client("DWF"+Identify())
 
@@ -117,17 +117,18 @@ def ClientConnect(broker_address):
 
 ClientConnect(broker_address)
 
+pinumber = Identify()
+
 SetRoom()
 
-client.on_connect = on_connect
-client.on_message = on_message
+#client.on_connect = on_connect
+#client.on_message = on_message
 
-client.loop_forever()
+#client.loop_forever()
 
-ClientConnect(broker_address)
+#ClientConnect(broker_address)
 
 Loop = True
 
 while Loop:
-    
     TempRead(client)
