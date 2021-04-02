@@ -166,7 +166,7 @@ while GameStart:
 sense.show_message("Save your score?", scroll_speed=0.04, text_colour=b)
 sense.show_message("Yes (U)", scroll_speed=0.04, text_colour=g)
 sense.show_message("No (D)", scroll_speed=0.04, text_colour=r)
-sense.show_message("Middle Click Selects", scroll_speed=0.04, text_colour=b)
+sense.show_message("Middle Selects", scroll_speed=0.04, text_colour=b)
 
 for event in sense.stick.get_events():
     continue
@@ -219,7 +219,7 @@ while LeaderBoard:
             client.connect(broker_address)
         except OSError:
             print("Failed to connect to Server | Attempting connection to local VM")
-            broker_address="192.168.1.10"
+            broker_address="192.168.1.18"
             client.connect(broker_address)
         except:
             print("Both Connections Failed")
