@@ -12,6 +12,7 @@ sense.clear()
 #priority = ""
 room = ""
 Average_list = []
+List_Pos = 0
 total = 0
 broker_address="192.168.1.32"
 
@@ -59,21 +60,27 @@ def SetRoom():
 
 def TempRead(client):
     global Average_list
+    global List_Pos
     global total
-    if len(Average_list) == 10:
-        Average_list = []
-        total = 0
-        TempRead = False
     temp = sense.get_temperature()
-    diff = round(cpu.temperature - temp, 1)
-    Average_list += [diff]
-    total += diff
+    diff = float(round(cpu.temperature - temp, 1))
+    if List_Pos > 9:
+        List_Pos = 0
+    if len(Average_list) == 10:
+        Average_list[List_Pos] = diff
+        List_Pos += 1
+        total = sum(Average_list)
+        #TempRead = False
+    else:
+        Average_list.append(diff)
+        total += diff
+
     average = total/len(Average_list)
     temp = (temp - average)*(9/5)+32
     temp = round(temp,1)
     #print("Average: " + str(average))
     #print("total: " + str(total))
-
+    #print(Average_list)
     #print(temp)
 
     sense.show_message(str(temp)+ "F")
