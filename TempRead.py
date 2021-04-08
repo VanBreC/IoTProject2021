@@ -86,7 +86,7 @@ def TempRead(client):
     sense.show_message(str(temp)+ "F")
     info = json.dumps({"PiNumber": pinumber, "Room": room, "Temp": temp})
     client.publish("PiTemps", info)
-    sleep(2)
+    sleep(1)
 
 """def on_connect(client, userdata, flags, rc):
     print ("Connected with result code "+str(rc))
@@ -138,4 +138,12 @@ SetRoom()
 Loop = True
 
 while Loop:
+    end = 0
     TempRead(client)
+    for event in sense.stick.get_events():
+        if event.direction == "middle":
+            end += 1
+    if end >= 10:
+        print("Ending Program")
+        Loop = False
+        break
