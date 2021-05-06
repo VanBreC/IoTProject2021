@@ -9,7 +9,7 @@ time.sleep(.1)
 # Read the angle value of all servos and print out
 def main():
  
-   # while True:
+    while True:
         for i in range(6):
             aa = Arm.Arm_serial_servo_read(i+1)
             print(aa)
@@ -27,14 +27,14 @@ except KeyboardInterrupt:
 
 
 # After controlling the movement of a servo individually, read its angle
-id = 6
-angle = 150
+#id = 6
+#angle = 150
  
-Arm.Arm_serial_servo_write(id, angle, 500)
-time.sleep(1)
+#Arm.Arm_serial_servo_write(id, angle, 500)
+#time.sleep(1)
  
-aa = Arm.Arm_serial_servo_read(id)
-print(aa)
+#aa = Arm.Arm_serial_servo_read(id)
+#print(aa)
  
 time.sleep(.5)
 
