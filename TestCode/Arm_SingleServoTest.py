@@ -25,11 +25,13 @@ time.sleep(1)
 id = 5
  
 def main():
-    for i in range(4):
+    for i in range(5):
+        Arm.Arm_serial_servo_write(2, 60, 500)
+        Arm.Arm_serial_servo_write6(45, 45, 45, 45, 45, 45, 0)
         ServoAngle = Arm.Arm_serial_servo_read(i+1)
         print("Adjusting Servo ", i+1)
-        while ServoAngle not in range(79,82):
-            Arm.Arm_serial_servo_write(i+1, 80, 500)
+        while ServoAngle not in range(44,47):
+            Arm.Arm_serial_servo_write(i+1, 45, 0)
             ServoAngle = Arm.Arm_serial_servo_read(i+1)
         print("Servo ", i+1, " is now adjusted")
         time.sleep(3)

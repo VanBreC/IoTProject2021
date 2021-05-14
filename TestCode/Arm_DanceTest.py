@@ -12,8 +12,8 @@ time_sleep = 0.5
 
 # DOFBOT dancing
 def main():
-# Middle servo
-Arm.Arm_serial_servo_write6(90, 90, 90, 90, 90, 90, 500)
+    # Middle servo
+    Arm.Arm_serial_servo_write6(90, 90, 90, 90, 90, 90, 500)
     time.sleep(1)
     
     while True:
