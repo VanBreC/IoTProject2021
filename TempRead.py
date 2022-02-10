@@ -14,7 +14,7 @@ room = ""
 Average_list = []
 List_Pos = 0
 total = 0
-broker_address="192.168.1.32"
+broker_address="192.168.1.201"
 
 def Identify():
     sship = str(subprocess.check_output(['hostname', '-I'])).split(' ')[0].replace("b'", "")
