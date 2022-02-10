@@ -8,7 +8,7 @@ import subprocess
 
 sense.clear()
 
-broker_address="192.168.1.32"
+broker_address="192.168.1.201"
 sship = str(subprocess.check_output(['hostname', '-I'])).split(' ')[0].replace("b'", "")
 endofsship = sship.split(".")[3]
 client = mqtt.Client("DWF"+endofsship)
